@@ -1,22 +1,35 @@
 import { useState } from 'react';
 import Loader from './Loader';
 
+//Data Typing
+
 interface Answer {
   role: string;
   content: string;
 }
 
+interface Question {
+  id: number;
+  text: string;
+  answer: string;
+}
+interface Quizz {
+  questions: Question[];
+}
+
+//Component
+
 const Form = (): JSX.Element => {
-  const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState<Answer>();
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState('');
 
   //make a request to openAI api
 
   function openaiFetchAPI() {
     setLoading(true);
-    var url = 'https://api.openai.com/v1/chat/completions';
-    var bearer = 'Bearer ' + process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+    const url = 'https://api.openai.com/v1/chat/completions';
+    const bearer = 'Bearer ' + process.env.NEXT_PUBLIC_OPENAI_API_KEY;
     fetch(url, {
       method: 'POST',
       headers: {
@@ -25,7 +38,12 @@ const Form = (): JSX.Element => {
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: question }],
+        messages: [
+          {
+            role: 'user',
+            content: `Génère moi un quizz sur le thème de ${theme} `,
+          },
+        ],
       }),
     })
       .then((response) => {
@@ -43,13 +61,14 @@ const Form = (): JSX.Element => {
 
   return (
     <div>
-      <h1>Welcome on My GPT !</h1>
-      <label htmlFor=''>Question : </label>
+      <h1>Welcome on My GPT Quizz Générator!</h1>
+      <label htmlFor=''>Thème : </label>
+
       <input
         type='text'
         className='m-2 border-2 border-black rounded-md w-100 text-stone-800 px-2'
         onChange={(e) => {
-          setQuestion(e.target.value);
+          setTheme(e.target.value);
         }}
       />
       <button
