@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Loader from './Loader';
 
 interface Answer {
   role: string;
@@ -8,13 +9,12 @@ interface Answer {
 const Form = (): JSX.Element => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState<Answer>();
+  const [loading, setLoading] = useState(false);
 
   //make a request to openAI api
 
-  function OpenaiFetchAPI() {
-    console.log('Calling GPT3');
-    console.log(process.env.NEXT_PUBLIC_OPENAI_API_KEY);
-
+  function openaiFetchAPI() {
+    setLoading(true);
     var url = 'https://api.openai.com/v1/chat/completions';
     var bearer = 'Bearer ' + process.env.NEXT_PUBLIC_OPENAI_API_KEY;
     fetch(url, {
@@ -33,37 +33,33 @@ const Form = (): JSX.Element => {
       })
       .then((data) => {
         console.log(data['choices'][0]);
-        // console.log(typeof data);
-        // console.log(Object.keys(data));
-        // console.log(data['choices'][0].text);
         setAnswer(data['choices'][0].message);
+        setLoading(false);
       })
       .catch((error) => {
         console.log('Something bad happened ' + error);
       });
   }
 
-  //get the response
-  //display the response
-
   return (
     <div>
+      <h1>Welcome on My GPT !</h1>
       <label htmlFor=''>Question : </label>
       <input
         type='text'
-        className='m-2 border-2 border-black rounded-md w-100'
+        className='m-2 border-2 border-black rounded-md w-100 text-stone-800 px-2'
         onChange={(e) => {
           setQuestion(e.target.value);
         }}
       />
       <button
-        className='border-2 border-black p-1 bg-slate-300 br-2 hover:bg-slate-400 rounded-md'
+        className='border-2 border-black px-2 py-1 bg-slate-300 br-2 hover:bg-slate-400 rounded-md'
         onClick={() => {
-          OpenaiFetchAPI();
+          openaiFetchAPI();
         }}>
         Valider
       </button>
-      <div>{answer && answer.content}</div>
+      <div>{loading ? <Loader /> : answer?.content}</div>
     </div>
   );
 };
