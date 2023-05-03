@@ -72,7 +72,7 @@ const Form = (): JSX.Element => {
 
   return (
     <div>
-      <h1>Welcome on My GPT Quizz Générator!</h1>
+      <h1>Welcome on My GPT Quizz Générator !</h1>
 
       <div className='flex-col'>
         <label htmlFor=''>Thème : </label>
