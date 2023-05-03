@@ -59,16 +59,9 @@ const Form = (): JSX.Element => {
       }),
     })
       .then((response) => {
-        console.log(response, 'response');
-
         return response.json();
       })
       .then((data) => {
-        console.log(data, 'data');
-
-        console.log(data['choices'][0]);
-        // console.log(JSON.parse(data['choices'][0].message), 'message');
-
         setAnswer(data['choices'][0].message);
         setLoading(false);
       })
